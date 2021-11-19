@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "env GOOGLE_APPLICATION_CREDENTIALS=\"C:/Users/Shaun/Desktop/Keys/crucial-oarlock-325305-0c571064d472.json\" nodemon server/index.js"
+  },
+  "author": "Shaun Froseth",
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/translate": "^6.3.0",
+    "@google-cloud/vision": "^2.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "multer": "^1.4.3",
+    "sharp": "^0.29.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
