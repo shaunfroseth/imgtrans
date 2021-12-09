@@ -40,7 +40,6 @@ async function detectText(filePath) {
   const client = new vision.ImageAnnotatorClient();
   const inputConfig = {
     content: await fs.readFile(`./static/${filePath}`),
-    //content: fileName,
   };
 
   const features = [{ type: "TEXT_DETECTION" }];
@@ -55,7 +54,7 @@ async function detectText(filePath) {
   };
 
   const [result] = await client.batchAnnotateImages(request);
-  console.log(JSON.stringify(result, null, 2));
+  //console.log(JSON.stringify(result, null, 2));
   return result.responses[0].textAnnotations[0].description;
 }
 
@@ -117,6 +116,7 @@ async function quickstart() {
   //console.log("Text:");
   //detections.forEach((text) => console.log(text));
 }
+
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_TYPES") {
     res.status(422).json({ error: "Only jpg/png allowed" });
@@ -127,7 +127,7 @@ app.use(function (err, req, res, next) {
     return;
   }
 });
-//quickstart();
+
 app.listen(5000, () => {
   console.log("Listening on port 5000");
 });

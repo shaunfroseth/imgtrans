@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <!-- File Upload Container -->
     <div background="grey darken-3" class="fileBox">
       <v-file-input
         class="my-4"
@@ -18,10 +18,12 @@
           translatedText = '';
           returnFile = null;
           uploadError = false;
+          submitPressed = false;
         "
         @update:error="errorHandler"
       >
       </v-file-input>
+      <!-- Buttons (Select/Translate) -->
       <v-row justify="center">
         <v-dialog v-model="dialog" scrollable max-width="300px">
           <template v-slot:activator="{ on, attrs }">
@@ -42,17 +44,32 @@
               >Translate</v-btn
             >
           </template>
+          <!-- Language Selector -->
           <v-card>
             <v-card-title>Select a Language</v-card-title>
             <v-divider></v-divider>
             <v-card-text style="height: 300px;">
               <v-radio-group v-model="dialogm1" column>
                 <v-radio label="Arabic" value="ar"></v-radio>
+                <v-radio label="Czech" value="cs"></v-radio>
+                <v-radio label="Danish" value="da"></v-radio>
+                <v-radio label="Dutch" value="nl"></v-radio>
                 <v-radio label="English" value="en"></v-radio>
+                <v-radio label="French" value="fr"></v-radio>
+                <v-radio label="German" value="de"></v-radio>
+                <v-radio label="Greek" value="el"></v-radio>
+                <v-radio label="Hindi" value="hi"></v-radio>
                 <v-radio label="Italian" value="it"></v-radio>
                 <v-radio label="Japanese" value="ja"></v-radio>
                 <v-radio label="Korean" value="ko"></v-radio>
+                <v-radio label="Persian" value="fa"></v-radio>
+                <v-radio label="Polish" value="pl"></v-radio>
+                <v-radio label="Portuguese" value="pt"></v-radio>
+                <v-radio label="Russian" value="ru"></v-radio>
+                <v-radio label="Serbian" value="sr"></v-radio>
                 <v-radio label="Spanish" value="es"></v-radio>
+                <v-radio label="Swedish" value="sv"></v-radio>
+                <v-radio label="Vietnamese" value="vi"></v-radio>
               </v-radio-group>
             </v-card-text>
             <v-divider></v-divider>
@@ -67,7 +84,7 @@
           </v-card>
         </v-dialog>
       </v-row>
-      <!-- <div class="outputResult" v-for="file in uploadedFiles" :key="file"> -->
+      <!-- Output -->
       <div v-show="returnFile" class="outputResult">
         <figure>
           <img class="centered my-4" :src="returnFile" alt="" />
@@ -79,8 +96,22 @@
         </figure>
       </div>
     </div>
+    <!-- Progress Bar -->
+    <div v-if="submitPressed" class="progress-bar">
+      <v-col>
+        <p>Fetching text ...</p>
+        <v-progress-linear
+          class="my-4"
+          color="blue darken-1"
+          indeterminate
+          rounded
+          height="6"
+        ></v-progress-linear>
+      </v-col>
+    </div>
 
-    <!-- <div>
+    <!-- TO-DO:  Implement text outliner
+      <div>
       <div id="imgContainer">
         <img src="@/assets/pictest.jpg" />
         <canvas
@@ -111,6 +142,7 @@ export default {
       dialog: false,
       message: "",
       error: false,
+      submitPressed: false,
       rules: [
         (value) =>
           !value ||
@@ -142,6 +174,7 @@ export default {
       this.error = false;
     },
     async submitFile() {
+      this.submitPressed = true;
       const fd = new FormData();
       fd.append("file", this.file, this.file.name);
       fd.append("dialog", this.dialogm1);
@@ -160,6 +193,7 @@ export default {
         this.message = err.response.data.error;
         this.error = true;
       }
+      this.submitPressed = false;
     },
   },
 };
@@ -225,6 +259,13 @@ figcaption {
 
 .canvas-wrapper {
   position: relative;
+}
+.progress-bar {
+  height: 500px;
+  width: 75%;
+  margin: auto;
+  display: flex;
+  align-items: center;
 }
 div#imgContainer {
   /* min-width: 200px;
