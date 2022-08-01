@@ -4,9 +4,12 @@ const multer = require("multer");
 const sharp = require("sharp");
 const fs = require("fs").promises;
 const path = require("path");
+const vision = require("@google-cloud/vision");
+const { Translate } = require("@google-cloud/translate").v2;
 
 const app = express();
 
+// Restrict file types
 const fileFilter = function (req, file, cb) {
   const allowedTypes = ["image/jpeg", "image/png"];
 
@@ -34,8 +37,6 @@ app.use("/static", express.static(path.join(__dirname, "static")));
 
 // Vision API call
 async function detectText(filePath) {
-  // Imports the Google Cloud client library
-  const vision = require("@google-cloud/vision");
   // Creates a client
   const client = new vision.ImageAnnotatorClient();
   const inputConfig = {
@@ -60,13 +61,8 @@ async function detectText(filePath) {
 
 //Translate API call
 async function translateText(results, targetLang) {
-  // Imports the Google Cloud client library
-  const { Translate } = require("@google-cloud/translate").v2;
-
   // Creates a client
   const translate = new Translate();
-
-  //Target language
   const target = targetLang;
 
   let [translations] = await translate.translate(results, target);
@@ -77,6 +73,7 @@ async function translateText(results, targetLang) {
 app.post("/upload", upload.single("file"), async (req, res) => {
   let targetLang = req.body.dialog;
   console.log("ROUTE HIT");
+
   try {
     await sharp(req.file.path).toFile(`./static/${req.file.originalname}`);
     fs.unlink(req.file.path, () => {
@@ -91,7 +88,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     let returnObject = {
       results,
       translatedResults,
-      file: `http://192.168.0.13:5000/static/${req.file.originalname}`,
+      file: `http://192.168.254.130:5000/static/${req.file.originalname}`,
     };
 
     //Send response
@@ -100,22 +97,6 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     res.status(422).json({ err });
   }
 });
-
-async function quickstart() {
-  const vision = require("@google-cloud/vision");
-
-  // Creates a client
-  const client = new vision.ImageAnnotatorClient();
-
-  const fileName = "C:/Users/Shaun/Desktop/pictest.jpg";
-
-  // Performs text detection on the local file
-  const [result] = await client.textDetection(fileName);
-  const detections = result;
-  console.log(JSON.stringify(detections, null, 2));
-  //console.log("Text:");
-  //detections.forEach((text) => console.log(text));
-}
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_TYPES") {

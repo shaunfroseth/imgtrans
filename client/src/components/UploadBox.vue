@@ -181,7 +181,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "http://192.168.0.13:5000/upload",
+          "http://192.168.254.130:5000/upload",
           fd
         );
         this.resultText = response.data.results;
